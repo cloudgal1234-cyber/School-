@@ -44,7 +44,11 @@ export function ModeSelectScreen({
   const [level, setLevel] = useState<Level>(1)
 
   return (
-    <ScreenShell title={`${topic.emoji} ${topic.shortTitle}`} subtitle={topic.title} onBack={onBack}>
+    <ScreenShell
+      title={`${topic.emoji} ${topic.shortTitle}`}
+      subtitle={`${topic.title} · שבילים ${topic.book} · עמ׳ ${topic.pageRange[0]}–${topic.pageRange[1]}`}
+      onBack={onBack}
+    >
       <div className="max-w-md mx-auto mt-4">
         <p className="font-bold text-slate-600 mb-2">רמת קושי</p>
         <div className="grid grid-cols-3 gap-2 mb-6">

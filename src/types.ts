@@ -20,6 +20,8 @@ export interface Topic {
   description: string
   emoji: string
   color: string // tailwind gradient "from-x to-y"
+  /** Approximate page range of this unit within its book, for page-based browsing. */
+  pageRange: [number, number]
 }
 
 export interface Choice {
