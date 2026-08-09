@@ -1,30 +1,56 @@
 import { useMemo, useState } from 'react'
 import { Minus, Plus } from 'lucide-react'
-import { pageBoundsForBook, topicForPage, topicsForBook } from '../../data/topics'
+import { BOOKS, pageBoundsForBook, topicForPage, topicsForBook } from '../../data/topics'
 import { Button } from '../common/Button'
 import { StarRow } from '../common/StarRow'
 import type { BookId, ProgressState, TopicId } from '../../types'
 
 export function PageBrowser({
-  book,
+  initialBook,
+  initialPage,
   progress,
   onSelect,
 }: {
-  book: BookId
+  initialBook: BookId
+  initialPage?: number
   progress: ProgressState
   onSelect: (topicId: TopicId) => void
 }) {
+  const [book, setBook] = useState<BookId>(initialBook)
   const [minPage, maxPage] = pageBoundsForBook(book)
-  const [page, setPage] = useState(minPage)
+  const [page, setPage] = useState(initialPage ?? minPage)
   const topics = useMemo(() => topicsForBook(book), [book])
   const currentTopic = topicForPage(book, page)
 
-  function setClamped(value: number) {
-    setPage(Math.min(Math.max(value, minPage), maxPage))
+  function setClamped(value: number, forBook: BookId = book) {
+    const [lo, hi] = pageBoundsForBook(forBook)
+    setPage(Math.min(Math.max(value, lo), hi))
+  }
+
+  function switchBook(next: BookId) {
+    if (next === book) return
+    setBook(next)
+    setClamped(pageBoundsForBook(next)[0], next)
   }
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex gap-2 justify-center">
+        {BOOKS.map((b) => (
+          <button
+            key={b.id}
+            onClick={() => switchBook(b.id)}
+            className={`px-4 py-1.5 rounded-xl font-bold text-sm border-2 transition-colors ${
+              book === b.id
+                ? 'bg-indigo-600 border-indigo-600 text-white'
+                : 'bg-white border-slate-200 text-slate-500'
+            }`}
+          >
+            {b.title}
+          </button>
+        ))}
+      </div>
+
       <div className="bg-white rounded-3xl shadow-md p-5 flex flex-col items-center gap-3">
         <p className="font-bold text-slate-600">איזה עמוד פותחים היום?</p>
         <div className="flex items-center gap-3">
@@ -58,7 +84,7 @@ export function PageBrowser({
             <Plus size={20} />
           </button>
         </div>
-        <p className="text-xs text-slate-400">עמודים {minPage}–{maxPage} בספר</p>
+        <p className="text-xs text-slate-400">עמודים {minPage}–{maxPage} בשבילים {book}</p>
 
         <div
           className={`w-full rounded-2xl p-4 mt-1 bg-gradient-to-br ${currentTopic.color} text-white flex items-center gap-3 animate-pop-in`}
@@ -79,7 +105,7 @@ export function PageBrowser({
       </div>
 
       <div className="bg-white rounded-3xl shadow-md p-4">
-        <p className="font-bold text-slate-600 mb-2 px-1">תוכן העניינים</p>
+        <p className="font-bold text-slate-600 mb-2 px-1">תוכן העניינים · שבילים {book}</p>
         <div className="flex flex-col gap-1.5">
           {topics.map((topic) => {
             const stars = Math.min(3, Math.floor(progress[topic.id].stars / 5))
