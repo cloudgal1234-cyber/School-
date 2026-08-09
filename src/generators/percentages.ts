@@ -4,7 +4,8 @@ import { buildChoicesFromLabels, buildNumericChoices, nextId, pick, randInt } fr
 const NICE_PERCENTS_EASY = [10, 20, 25, 50, 75]
 const NICE_PERCENTS_HARD = [5, 15, 30, 40, 60, 70, 80, 90]
 
-function percentOfAmount(level: Level): Question {
+/** חלק א' – אחוז מכמות */
+export function percentOfAmountQuestion(level: Level): Question {
   const percent = level === 1 ? pick(NICE_PERCENTS_EASY) : pick([...NICE_PERCENTS_EASY, ...NICE_PERCENTS_HARD])
   // choose an amount that keeps the result a whole number
   const base = percent % 25 === 0 ? 4 : percent % 20 === 0 ? 5 : percent % 10 === 0 ? 10 : 20
@@ -20,34 +21,6 @@ function percentOfAmount(level: Level): Question {
     choices,
     correctChoiceId,
     correctAnswerText: String(result),
-  }
-}
-
-function convertQuestion(): Question {
-  const table: [number, number, string][] = [
-    [1, 2, '50%'],
-    [1, 4, '25%'],
-    [3, 4, '75%'],
-    [1, 5, '20%'],
-    [2, 5, '40%'],
-    [1, 10, '10%'],
-    [3, 10, '30%'],
-    [7, 10, '70%'],
-    [1, 20, '5%'],
-    [1, 100, '1%'],
-  ]
-  const [n, d, correctLabel] = pick(table)
-  const distractors = shuffleNumbersAround(correctLabel)
-  const { choices, correctChoiceId } = buildChoicesFromLabels(correctLabel, distractors)
-  return {
-    id: nextId('percentages'),
-    topicId: 'percentages',
-    level: 2,
-    prompt: `לאיזה אחוז שווה השבר ${n}/${d}?`,
-    inputMode: 'mcq',
-    choices,
-    correctChoiceId,
-    correctAnswerText: correctLabel,
   }
 }
 
@@ -71,7 +44,37 @@ function shuffleNumbersAround(label: string): string[] {
   return [...options].map((v) => `${v}%`)
 }
 
-function findWholeQuestion(): Question {
+/** חלק ב' – המרה בין שבר לאחוז */
+export function convertToPercentQuestion(level: Level): Question {
+  const table: [number, number, string][] = [
+    [1, 2, '50%'],
+    [1, 4, '25%'],
+    [3, 4, '75%'],
+    [1, 5, '20%'],
+    [2, 5, '40%'],
+    [1, 10, '10%'],
+    [3, 10, '30%'],
+    [7, 10, '70%'],
+    [1, 20, '5%'],
+    [1, 100, '1%'],
+  ]
+  const [n, d, correctLabel] = pick(table)
+  const distractors = shuffleNumbersAround(correctLabel)
+  const { choices, correctChoiceId } = buildChoicesFromLabels(correctLabel, distractors)
+  return {
+    id: nextId('percentages'),
+    topicId: 'percentages',
+    level,
+    prompt: `לאיזה אחוז שווה השבר ${n}/${d}?`,
+    inputMode: 'mcq',
+    choices,
+    correctChoiceId,
+    correctAnswerText: correctLabel,
+  }
+}
+
+/** חלק ג' – מציאת השלם לפי אחוז ידוע */
+export function findWholeQuestion(level: Level): Question {
   const percent = pick([10, 20, 25, 50])
   const resultPart = randInt(2, 30)
   const whole = Math.round((resultPart * 100) / percent)
@@ -79,7 +82,7 @@ function findWholeQuestion(): Question {
   return {
     id: nextId('percentages'),
     topicId: 'percentages',
-    level: 3,
+    level,
     prompt: `${percent}% ממספר מסוים שווים ${resultPart}. מה המספר?`,
     inputMode: 'numeric',
     choices,
@@ -88,8 +91,14 @@ function findWholeQuestion(): Question {
   }
 }
 
+export const PERCENTAGES_SUBTOPICS = {
+  'percent-of-amount': percentOfAmountQuestion,
+  convert: convertToPercentQuestion,
+  'find-whole': findWholeQuestion,
+}
+
 export function generatePercentages(level: Level): Question {
-  if (level === 1) return percentOfAmount(1)
-  if (level === 2) return pick([() => percentOfAmount(2), convertQuestion])()
-  return pick([findWholeQuestion, () => percentOfAmount(3)])()
+  if (level === 1) return percentOfAmountQuestion(1)
+  if (level === 2) return pick([percentOfAmountQuestion, convertToPercentQuestion])(2)
+  return pick([findWholeQuestion, percentOfAmountQuestion])(3)
 }

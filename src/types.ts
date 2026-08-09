@@ -22,6 +22,15 @@ export interface Topic {
   color: string // tailwind gradient "from-x to-y"
   /** Approximate page range of this unit within its book, for page-based browsing. */
   pageRange: [number, number]
+  /** Named sub-skills ("חלק א'", "חלק ב'", ...) that can be practiced individually. */
+  subTopics: SubTopic[]
+}
+
+export interface SubTopic {
+  /** Matches a key in generators/index.ts SUB_GENERATORS[topicId]. */
+  id: string
+  label: string
+  description: string
 }
 
 export interface Choice {
@@ -54,7 +63,7 @@ export interface Question {
 
 export type QuestionGenerator = (level: Level) => Question
 
-export type Mode = 'exercises' | 'race' | 'balloons'
+export type Mode = 'exercises' | 'race' | 'balloons' | 'worksheet'
 
 export interface TopicProgress {
   stars: number

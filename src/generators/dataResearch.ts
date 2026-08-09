@@ -16,7 +16,8 @@ function buildChart(level: Level): { chart: ChartData; values: number[] } {
   return { chart: { title: dataset.title, labels, values, unit: dataset.unit }, values }
 }
 
-function maxMinQuestion(level: Level): Question {
+/** חלק א' – מקסימום ומינימום */
+export function maxMinQuestion(level: Level): Question {
   const { chart, values } = buildChart(level)
   const askMax = Math.random() < 0.5
   const targetValue = askMax ? Math.max(...values) : Math.min(...values)
@@ -37,7 +38,8 @@ function maxMinQuestion(level: Level): Question {
   }
 }
 
-function sumOrDiffQuestion(level: Level): Question {
+/** חלק ב' – סכום והפרש */
+export function sumOrDiffQuestion(level: Level): Question {
   const { chart, values } = buildChart(level)
   const isDiff = level >= 2 && Math.random() < 0.5
   if (isDiff) {
@@ -72,7 +74,8 @@ function sumOrDiffQuestion(level: Level): Question {
   }
 }
 
-function readValueQuestion(level: Level): Question {
+/** חלק ג' – קריאת ערך מהגרף */
+export function readValueQuestion(level: Level): Question {
   const { chart, values } = buildChart(level)
   const idx = randInt(0, chart.labels.length - 1)
   const correct = values[idx]
@@ -88,6 +91,12 @@ function readValueQuestion(level: Level): Question {
     correctAnswerText: String(correct),
     chart,
   }
+}
+
+export const DATA_RESEARCH_SUBTOPICS = {
+  'max-min': maxMinQuestion,
+  'sum-diff': sumOrDiffQuestion,
+  'read-value': readValueQuestion,
 }
 
 export function generateDataResearch(level: Level): Question {

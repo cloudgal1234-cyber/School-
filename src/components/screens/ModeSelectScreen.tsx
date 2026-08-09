@@ -1,10 +1,16 @@
 import { useState } from 'react'
-import { Gauge, ListChecks, Wind } from 'lucide-react'
+import { Gauge, ListChecks, NotebookPen, Wind } from 'lucide-react'
 import { TOPIC_BY_ID } from '../../data/topics'
 import { ScreenShell } from '../common/ScreenShell'
 import type { Level, Mode, TopicId } from '../../types'
 
 const MODES: { id: Mode; title: string; description: string; icon: typeof ListChecks }[] = [
+  {
+    id: 'worksheet',
+    title: 'דף עבודה',
+    description: 'כל הסעיפים (חלק א׳, ב׳, ג׳...) בדף אחד, עם מקום לכתוב תשובה ליד כל שאלה',
+    icon: NotebookPen,
+  },
   {
     id: 'exercises',
     title: 'תרגילים',

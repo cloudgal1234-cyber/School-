@@ -49,7 +49,58 @@ function addSubRelated(op: '+' | '-'): { a: Fraction; b: Fraction; result: Fract
   return { a, b, result, prompt: `${fractionLabel(a)} ${op} ${fractionLabel(b)}` }
 }
 
-function compareQuestion(): Question {
+/** חלק א' – חיבור וחיסור שברים עם מכנה משותף */
+export function sameDenominatorQuestion(level: Level): Question {
+  const pool = level === 1 ? [4, 5, 6, 8, 10] : level === 2 ? [6, 8, 9, 10, 12] : [8, 9, 10, 12]
+  const denom = pick(pool)
+  const op = pick<'+' | '-'>(['+', '-'])
+  const { result, prompt } = addSub(denom, op)
+  const correctLabel = fractionLabel(result)
+  const wrongs = [
+    fractionLabel({ n: result.n + 1, d: denom }),
+    fractionLabel({ n: Math.max(1, result.n - 1), d: denom }),
+    fractionLabel({ n: result.n, d: denom + pick([2, -2]) }),
+  ]
+  const { choices, correctChoiceId } = buildChoicesFromLabels(correctLabel, wrongs)
+  return {
+    id: nextId('fractions-b'),
+    topicId: 'fractions-b',
+    level,
+    prompt: `${prompt} = ?`,
+    inputMode: 'mcq',
+    choices,
+    correctChoiceId,
+    correctAnswerText: correctLabel,
+    explanation: `מכנה משותף ${denom}, אז מחברים/מחסרים רק את המונים.`,
+  }
+}
+
+/** חלק ב' – חיבור וחיסור שברים עם מכנים שונים (הרחבה למכנה משותף) */
+export function relatedDenominatorQuestion(level: Level): Question {
+  const op = pick<'+' | '-'>(['+', '-'])
+  const { a, b, result, prompt } = addSubRelated(op)
+  const correctLabel = fractionLabel(result)
+  const wrongs = [
+    fractionLabel({ n: result.n + 1, d: result.d }),
+    fractionLabel({ n: Math.max(1, result.n - 1), d: result.d }),
+    fractionLabel({ n: a.n + (fractionsEqual(a, b) ? 1 : b.n), d: b.d }),
+  ]
+  const { choices, correctChoiceId } = buildChoicesFromLabels(correctLabel, wrongs)
+  return {
+    id: nextId('fractions-b'),
+    topicId: 'fractions-b',
+    level,
+    prompt: `${prompt} = ?`,
+    inputMode: 'mcq',
+    choices,
+    correctChoiceId,
+    correctAnswerText: correctLabel,
+    explanation: `הרחיבו למכנה משותף, ואז ${op === '+' ? 'חיברו' : 'חיסרו'} את המונים.`,
+  }
+}
+
+/** חלק ג' – השוואת שברים */
+export function compareFractionsQuestion(level: Level): Question {
   const [small, big] = pick(RELATED_PAIRS)
   const useMixedDenoms = Math.random() < 0.5
   const dA = useMixedDenoms ? small : pick([3, 4, 5, 6, 8])
@@ -72,7 +123,7 @@ function compareQuestion(): Question {
   return {
     id: nextId('fractions-b'),
     topicId: 'fractions-b',
-    level: 3,
+    level,
     prompt: `איזה שבר גדול יותר: ${fractionLabel(a)} או ${fractionLabel(b)}?`,
     inputMode: 'mcq',
     choices,
@@ -82,8 +133,9 @@ function compareQuestion(): Question {
   }
 }
 
-function mixedNumberQuestion(): Question {
-  const whole = randInt(1, 4)
+/** חלק ד' – שברים מעורבים ↔ שברים פשוטים */
+export function mixedNumberQuestion(level: Level): Question {
+  const whole = randInt(1, level === 3 ? 6 : 4)
   const d = pick([2, 3, 4, 5, 6, 8])
   const n = randInt(1, d - 1)
   const improperN = whole * d + n
@@ -97,7 +149,7 @@ function mixedNumberQuestion(): Question {
   return {
     id: nextId('fractions-b'),
     topicId: 'fractions-b',
-    level: 3,
+    level,
     prompt: `הפכו למספר מעורב לשבר פשוט: ${whole} שלמים ו-${fractionLabel({ n, d })}`,
     inputMode: 'mcq',
     choices,
@@ -107,53 +159,15 @@ function mixedNumberQuestion(): Question {
   }
 }
 
+export const FRACTIONS_B_SUBTOPICS = {
+  'same-denominator': sameDenominatorQuestion,
+  'related-denominator': relatedDenominatorQuestion,
+  compare: compareFractionsQuestion,
+  'mixed-numbers': mixedNumberQuestion,
+}
+
 export function generateFractionsB(level: Level): Question {
-  if (level === 1) {
-    const denom = pick([4, 5, 6, 8, 10])
-    const op = pick<'+' | '-'>(['+', '-'])
-    const { result, prompt } = addSub(denom, op)
-    const correctLabel = fractionLabel(result)
-    const wrongs = [
-      fractionLabel({ n: result.n + 1, d: denom }),
-      fractionLabel({ n: Math.max(1, result.n - 1), d: denom }),
-      fractionLabel({ n: result.n, d: denom + pick([2, -2]) }),
-    ]
-    const { choices, correctChoiceId } = buildChoicesFromLabels(correctLabel, wrongs)
-    return {
-      id: nextId('fractions-b'),
-      topicId: 'fractions-b',
-      level,
-      prompt: `${prompt} = ?`,
-      inputMode: 'mcq',
-      choices,
-      correctChoiceId,
-      correctAnswerText: correctLabel,
-      explanation: `מכנה משותף ${denom}, אז מחברים/מחסרים רק את המונים.`,
-    }
-  }
-
-  if (level === 2) {
-    const op = pick<'+' | '-'>(['+', '-'])
-    const { a, b, result, prompt } = addSubRelated(op)
-    const correctLabel = fractionLabel(result)
-    const wrongs = [
-      fractionLabel({ n: result.n + 1, d: result.d }),
-      fractionLabel({ n: Math.max(1, result.n - 1), d: result.d }),
-      fractionLabel({ n: a.n + (fractionsEqual(a, b) ? 1 : b.n), d: b.d }),
-    ]
-    const { choices, correctChoiceId } = buildChoicesFromLabels(correctLabel, wrongs)
-    return {
-      id: nextId('fractions-b'),
-      topicId: 'fractions-b',
-      level,
-      prompt: `${prompt} = ?`,
-      inputMode: 'mcq',
-      choices,
-      correctChoiceId,
-      correctAnswerText: correctLabel,
-      explanation: `הרחיבו למכנה משותף, ואז ${op === '+' ? 'חיברו' : 'חיסרו'} את המונים.`,
-    }
-  }
-
-  return pick([compareQuestion, mixedNumberQuestion])()
+  if (level === 1) return sameDenominatorQuestion(level)
+  if (level === 2) return relatedDenominatorQuestion(level)
+  return pick([compareFractionsQuestion, mixedNumberQuestion])(level)
 }

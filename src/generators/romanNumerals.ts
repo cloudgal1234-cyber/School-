@@ -40,32 +40,38 @@ function randomDifferentRoman(correct: number, max: number): string {
   return toRoman(candidate)
 }
 
-export function generateRomanNumerals(level: Level): Question {
-  const max = level === 1 ? 20 : level === 2 ? 50 : 100
+function maxForLevel(level: Level): number {
+  return level === 1 ? 20 : level === 2 ? 50 : 100
+}
+
+/** חלק א' – ממספר לספרות רומיות */
+export function toRomanQuestion(level: Level): Question {
+  const max = maxForLevel(level)
   const value = randInt(1, max)
-  const direction = pick<'toRoman' | 'toArabic'>(['toRoman', 'toArabic'])
-
-  if (direction === 'toRoman') {
-    const correctLabel = toRoman(value)
-    const distractors = new Set<string>()
-    let guard = 0
-    while (distractors.size < 3 && guard < 30) {
-      distractors.add(randomDifferentRoman(value, max))
-      guard += 1
-    }
-    const { choices, correctChoiceId } = buildChoicesFromLabels(correctLabel, [...distractors])
-    return {
-      id: nextId('roman'),
-      topicId: 'roman-numerals',
-      level,
-      prompt: `איך כותבים ${value} בספרות רומיות?`,
-      inputMode: 'mcq',
-      choices,
-      correctChoiceId,
-      correctAnswerText: correctLabel,
-    }
+  const correctLabel = toRoman(value)
+  const distractors = new Set<string>()
+  let guard = 0
+  while (distractors.size < 3 && guard < 30) {
+    distractors.add(randomDifferentRoman(value, max))
+    guard += 1
   }
+  const { choices, correctChoiceId } = buildChoicesFromLabels(correctLabel, [...distractors])
+  return {
+    id: nextId('roman'),
+    topicId: 'roman-numerals',
+    level,
+    prompt: `איך כותבים ${value} בספרות רומיות?`,
+    inputMode: 'mcq',
+    choices,
+    correctChoiceId,
+    correctAnswerText: correctLabel,
+  }
+}
 
+/** חלק ב' – מספרות רומיות למספר */
+export function toArabicQuestion(level: Level): Question {
+  const max = maxForLevel(level)
+  const value = randInt(1, max)
   const roman = toRoman(value)
   const correctLabel = String(value)
   const distractors = new Set<number>()
@@ -89,4 +95,13 @@ export function generateRomanNumerals(level: Level): Question {
     correctChoiceId,
     correctAnswerText: correctLabel,
   }
+}
+
+export const ROMAN_NUMERALS_SUBTOPICS = {
+  'to-roman': toRomanQuestion,
+  'to-arabic': toArabicQuestion,
+}
+
+export function generateRomanNumerals(level: Level): Question {
+  return pick([toRomanQuestion, toArabicQuestion])(level)
 }

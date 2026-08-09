@@ -8,7 +8,13 @@ function fmt2(n: number): string {
   return n.toFixed(2)
 }
 
-function compareQuestion(decimals: 1 | 2, level: Level): Question {
+function decimalsForLevel(level: Level): 1 | 2 {
+  return level === 3 ? 2 : 1
+}
+
+/** חלק א' – השוואת מספרים עשרוניים */
+export function compareDecimalsQuestion(level: Level): Question {
+  const decimals = decimalsForLevel(level)
   const scale = 10 ** decimals
   const a = randInt(1, 9 * scale) / scale
   let b = randInt(1, 9 * scale) / scale
@@ -32,8 +38,9 @@ function compareQuestion(decimals: 1 | 2, level: Level): Question {
   }
 }
 
-function fractionToDecimalQuestion(): Question {
-  const isTenths = Math.random() < 0.5
+/** חלק ב' – שבר עשרוני (עשיריות / מאיות → כתיב עשרוני) */
+export function fractionToDecimalQuestion(level: Level): Question {
+  const isTenths = level === 1 ? true : level === 2 ? Math.random() < 0.5 : false
   if (isTenths) {
     const n = randInt(1, 9)
     const correct = n / 10
@@ -42,7 +49,7 @@ function fractionToDecimalQuestion(): Question {
     return {
       id: nextId('decimals-a'),
       topicId: 'decimals-a',
-      level: 1,
+      level,
       prompt: `כמה זה ${n}/10 בכתיב עשרוני?`,
       inputMode: 'numeric',
       choices,
@@ -57,7 +64,7 @@ function fractionToDecimalQuestion(): Question {
   return {
     id: nextId('decimals-a'),
     topicId: 'decimals-a',
-    level: 2,
+    level,
     prompt: `כמה זה ${n}/100 בכתיב עשרוני?`,
     inputMode: 'numeric',
     choices,
@@ -66,7 +73,9 @@ function fractionToDecimalQuestion(): Question {
   }
 }
 
-function addSubQuestion(decimals: 1 | 2, level: Level): Question {
+/** חלק ג' – חיבור וחיסור מספרים עשרוניים */
+export function addSubDecimalsQuestion(level: Level): Question {
+  const decimals = decimalsForLevel(level)
   const scale = 10 ** decimals
   const op = pick<'+' | '-'>(['+', '-'])
   let a = randInt(1, 9 * scale) / scale
@@ -90,16 +99,18 @@ function addSubQuestion(decimals: 1 | 2, level: Level): Question {
   }
 }
 
+export const DECIMALS_A_SUBTOPICS = {
+  compare: compareDecimalsQuestion,
+  'fraction-to-decimal': fractionToDecimalQuestion,
+  'add-sub': addSubDecimalsQuestion,
+}
+
 export function generateDecimalsA(level: Level): Question {
   if (level === 1) {
-    return pick([
-      () => compareQuestion(1, 1),
-      fractionToDecimalQuestion,
-      () => addSubQuestion(1, 1),
-    ])()
+    return pick([compareDecimalsQuestion, fractionToDecimalQuestion, addSubDecimalsQuestion])(level)
   }
   if (level === 2) {
-    return pick([() => addSubQuestion(1, 2), fractionToDecimalQuestion])()
+    return pick([addSubDecimalsQuestion, fractionToDecimalQuestion])(level)
   }
-  return pick([() => addSubQuestion(2, 3), () => compareQuestion(2, 3)])()
+  return pick([addSubDecimalsQuestion, compareDecimalsQuestion])(level)
 }

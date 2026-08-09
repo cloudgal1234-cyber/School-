@@ -1,7 +1,8 @@
 import type { Level, Question } from '../types'
 import { buildChoicesFromLabels, buildNumericChoices, nextId, pick, randInt } from './utils'
 
-function multiplicationQuestion(level: Level): Question {
+/** חלק א' – כפל */
+export function multiplicationQuestion(level: Level): Question {
   const a = level === 1 ? randInt(11, 99) : randInt(12, 45)
   const b = level === 1 ? randInt(2, 9) : randInt(11, 25)
   const result = a * b
@@ -18,7 +19,8 @@ function multiplicationQuestion(level: Level): Question {
   }
 }
 
-function divisionQuestion(level: Level): Question {
+/** חלק ב' – חילוק (עם ובלי שארית) */
+export function divisionQuestion(level: Level): Question {
   const divisor = randInt(2, level === 1 ? 9 : 12)
   const quotient = randInt(4, level === 1 ? 15 : 30)
   const remainder = level === 1 ? 0 : randInt(0, divisor - 1)
@@ -42,7 +44,8 @@ function divisionQuestion(level: Level): Question {
   }
 }
 
-function orderOfOperationsQuestion(): Question {
+/** חלק ג' – סדר פעולות חשבון */
+export function orderOfOperationsQuestion(level: Level): Question {
   const a = randInt(2, 12)
   const b = randInt(2, 12)
   const c = randInt(2, 9)
@@ -60,7 +63,7 @@ function orderOfOperationsQuestion(): Question {
   return {
     id: nextId('natural-b'),
     topicId: 'natural-numbers-b',
-    level: 3,
+    level,
     prompt: `${prompt} = ?`,
     inputMode: 'numeric',
     choices,
@@ -70,7 +73,8 @@ function orderOfOperationsQuestion(): Question {
   }
 }
 
-function divisibilityQuestion(): Question {
+/** חלק ד' – חוקי התחלקות */
+export function divisibilityQuestion(level: Level): Question {
   const divisor = pick([2, 3, 5, 10])
   const isDivisible = Math.random() < 0.5
   let number = randInt(20, 199)
@@ -85,7 +89,7 @@ function divisibilityQuestion(): Question {
   return {
     id: nextId('natural-b'),
     topicId: 'natural-numbers-b',
-    level: 3,
+    level,
     prompt: `האם המספר ${number} מתחלק ב-${divisor} ללא שארית?`,
     inputMode: 'mcq',
     choices,
@@ -94,8 +98,15 @@ function divisibilityQuestion(): Question {
   }
 }
 
+export const NATURAL_NUMBERS_B_SUBTOPICS = {
+  multiplication: multiplicationQuestion,
+  division: divisionQuestion,
+  'order-of-operations': orderOfOperationsQuestion,
+  divisibility: divisibilityQuestion,
+}
+
 export function generateNaturalNumbersB(level: Level): Question {
   if (level === 1) return pick([multiplicationQuestion, divisionQuestion])(1)
   if (level === 2) return pick([multiplicationQuestion, divisionQuestion])(2)
-  return pick([orderOfOperationsQuestion, divisibilityQuestion, () => divisionQuestion(3)])()
+  return pick([orderOfOperationsQuestion, divisibilityQuestion, divisionQuestion])(3)
 }

@@ -1,4 +1,4 @@
-import type { BookId, Topic, TopicId } from '../types'
+import type { BookId, SubTopic, Topic, TopicId } from '../types'
 
 /**
  * Topics follow the table of contents of "שבילים פלוס" (Matach) for כיתה ה':
@@ -7,8 +7,58 @@ import type { BookId, Topic, TopicId } from '../types'
  *
  * pageRange מחלק את הספר ליחידות לפי סדר הנושאים בתוכן העניינים, כדי לאפשר
  * ניווט "לפי עמוד". מספרי העמודים משוערים (חלוקה יחסית של הספר) ולא הועתקו
- * מתוך עותק מודפס.
+ * מתוך עותק מודפס. subTopics מפרקים כל נושא לתת-נושאים ("חלק א'", "חלק ב'"...)
+ * שתואמים למחוללי השאלות ב-src/generators.
  */
+
+const FRACTIONS_B_SUBTOPICS: SubTopic[] = [
+  { id: 'same-denominator', label: 'חלק א׳', description: 'חיבור וחיסור עם מכנה משותף' },
+  { id: 'related-denominator', label: 'חלק ב׳', description: 'חיבור וחיסור עם הרחבה למכנה משותף' },
+  { id: 'compare', label: 'חלק ג׳', description: 'השוואת שברים' },
+  { id: 'mixed-numbers', label: 'חלק ד׳', description: 'שברים מעורבים ושברים פשוטים' },
+]
+
+const ROMAN_NUMERALS_SUBTOPICS: SubTopic[] = [
+  { id: 'to-roman', label: 'חלק א׳', description: 'ממספר לספרות רומיות' },
+  { id: 'to-arabic', label: 'חלק ב׳', description: 'מספרות רומיות למספר' },
+]
+
+const DECIMALS_A_SUBTOPICS: SubTopic[] = [
+  { id: 'compare', label: 'חלק א׳', description: 'השוואת מספרים עשרוניים' },
+  { id: 'fraction-to-decimal', label: 'חלק ב׳', description: 'שבר עשרוני' },
+  { id: 'add-sub', label: 'חלק ג׳', description: 'חיבור וחיסור מספרים עשרוניים' },
+]
+
+const NATURAL_NUMBERS_B_SUBTOPICS: SubTopic[] = [
+  { id: 'multiplication', label: 'חלק א׳', description: 'כפל' },
+  { id: 'division', label: 'חלק ב׳', description: 'חילוק' },
+  { id: 'order-of-operations', label: 'חלק ג׳', description: 'סדר פעולות חשבון' },
+  { id: 'divisibility', label: 'חלק ד׳', description: 'חוקי התחלקות' },
+]
+
+const DECIMALS_B_SUBTOPICS: SubTopic[] = [
+  { id: 'power-of-ten', label: 'חלק א׳', description: 'כפל וחילוק ב-10, 100, 1000' },
+  { id: 'multiply-whole', label: 'חלק ב׳', description: 'כפל במספר שלם' },
+  { id: 'divide-whole', label: 'חלק ג׳', description: 'חילוק במספר שלם' },
+]
+
+const PERCENTAGES_SUBTOPICS: SubTopic[] = [
+  { id: 'percent-of-amount', label: 'חלק א׳', description: 'אחוז מכמות' },
+  { id: 'convert', label: 'חלק ב׳', description: 'המרה בין שבר לאחוז' },
+  { id: 'find-whole', label: 'חלק ג׳', description: 'מציאת השלם לפי אחוז' },
+]
+
+const AVERAGE_SUBTOPICS: SubTopic[] = [
+  { id: 'average', label: 'חלק א׳', description: 'חישוב ממוצע' },
+  { id: 'missing-number', label: 'חלק ב׳', description: 'השלמת מספר חסר לפי ממוצע' },
+]
+
+const DATA_RESEARCH_SUBTOPICS: SubTopic[] = [
+  { id: 'max-min', label: 'חלק א׳', description: 'מקסימום ומינימום' },
+  { id: 'sum-diff', label: 'חלק ב׳', description: 'סכום והפרש' },
+  { id: 'read-value', label: 'חלק ג׳', description: 'קריאת ערך מהגרף' },
+]
+
 export const TOPICS: Topic[] = [
   {
     id: 'fractions-b',
@@ -19,6 +69,7 @@ export const TOPICS: Topic[] = [
     emoji: '🍕',
     color: 'from-rose-400 to-pink-500',
     pageRange: [4, 19],
+    subTopics: FRACTIONS_B_SUBTOPICS,
   },
   {
     id: 'roman-numerals',
@@ -29,6 +80,7 @@ export const TOPICS: Topic[] = [
     emoji: '🏛️',
     color: 'from-amber-400 to-orange-500',
     pageRange: [20, 25],
+    subTopics: ROMAN_NUMERALS_SUBTOPICS,
   },
   {
     id: 'decimals-a',
@@ -39,6 +91,7 @@ export const TOPICS: Topic[] = [
     emoji: '🔟',
     color: 'from-sky-400 to-blue-500',
     pageRange: [26, 40],
+    subTopics: DECIMALS_A_SUBTOPICS,
   },
   {
     id: 'natural-numbers-b',
@@ -49,6 +102,7 @@ export const TOPICS: Topic[] = [
     emoji: '🔢',
     color: 'from-emerald-400 to-teal-500',
     pageRange: [4, 13],
+    subTopics: NATURAL_NUMBERS_B_SUBTOPICS,
   },
   {
     id: 'decimals-b',
@@ -59,6 +113,7 @@ export const TOPICS: Topic[] = [
     emoji: '🎯',
     color: 'from-cyan-400 to-sky-500',
     pageRange: [14, 23],
+    subTopics: DECIMALS_B_SUBTOPICS,
   },
   {
     id: 'percentages',
@@ -69,6 +124,7 @@ export const TOPICS: Topic[] = [
     emoji: '💯',
     color: 'from-violet-400 to-purple-500',
     pageRange: [24, 31],
+    subTopics: PERCENTAGES_SUBTOPICS,
   },
   {
     id: 'average',
@@ -79,6 +135,7 @@ export const TOPICS: Topic[] = [
     emoji: '⚖️',
     color: 'from-fuchsia-400 to-pink-500',
     pageRange: [32, 37],
+    subTopics: AVERAGE_SUBTOPICS,
   },
   {
     id: 'data-research',
@@ -89,6 +146,7 @@ export const TOPICS: Topic[] = [
     emoji: '📊',
     color: 'from-lime-400 to-green-500',
     pageRange: [38, 46],
+    subTopics: DATA_RESEARCH_SUBTOPICS,
   },
 ]
 

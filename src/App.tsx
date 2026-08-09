@@ -5,6 +5,7 @@ import { TopicSelectScreen } from './components/screens/TopicSelectScreen'
 import { ModeSelectScreen } from './components/screens/ModeSelectScreen'
 import { ResultsScreen } from './components/screens/ResultsScreen'
 import { ExercisesSession } from './components/practice/ExercisesSession'
+import { WorksheetPage } from './components/practice/WorksheetPage'
 import { RaceGame } from './components/games/RaceGame'
 import { BalloonGame } from './components/games/BalloonGame'
 import { useProgress } from './hooks/useProgress'
@@ -100,6 +101,16 @@ export default function App() {
             setLevel(l)
             setScreen('session')
           }}
+        />
+      )}
+
+      {screen === 'session' && topicId && mode === 'worksheet' && (
+        <WorksheetPage
+          topicId={topicId}
+          level={level}
+          muted={muted}
+          onBack={() => setScreen('mode')}
+          onComplete={handleComplete}
         />
       )}
 
