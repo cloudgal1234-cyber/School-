@@ -18,19 +18,26 @@ export function PageBrowser({
 }) {
   const [book, setBook] = useState<BookId>(initialBook)
   const [minPage, maxPage] = pageBoundsForBook(book)
-  const [page, setPage] = useState(initialPage ?? minPage)
+  // pageText is the free-typing buffer shown in the input; it's only clamped into a
+  // valid page number on blur/Enter, so typing e.g. "180" doesn't snap back to the
+  // minimum after every keystroke.
+  const [pageText, setPageText] = useState(String(initialPage ?? minPage))
+  const parsedPage = Number(pageText)
+  const page = Number.isFinite(parsedPage) && pageText.trim() !== '' ? parsedPage : minPage
   const topics = useMemo(() => topicsForBook(book), [book])
   const currentTopic = topicForPage(book, page)
 
-  function setClamped(value: number, forBook: BookId = book) {
+  function commit(value: number, forBook: BookId = book) {
     const [lo, hi] = pageBoundsForBook(forBook)
-    setPage(Math.min(Math.max(value, lo), hi))
+    const clamped = Math.min(Math.max(value, lo), hi)
+    setPageText(String(clamped))
+    return clamped
   }
 
   function switchBook(next: BookId) {
     if (next === book) return
     setBook(next)
-    setClamped(pageBoundsForBook(next)[0], next)
+    commit(pageBoundsForBook(next)[0], next)
   }
 
   return (
@@ -55,7 +62,7 @@ export function PageBrowser({
         <p className="font-bold text-slate-600">איזה עמוד פותחים היום?</p>
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setClamped(page - 1)}
+            onClick={() => commit(page - 1)}
             disabled={page <= minPage}
             aria-label="עמוד קודם"
             className="w-11 h-11 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center disabled:opacity-30 active:scale-90 transition-transform"
@@ -63,20 +70,27 @@ export function PageBrowser({
             <Minus size={20} />
           </button>
           <input
-            type="number"
+            type="text"
             inputMode="numeric"
             dir="ltr"
-            value={page}
-            min={minPage}
-            max={maxPage}
+            value={pageText}
             onChange={(e) => {
-              const v = Number(e.target.value)
-              if (!Number.isNaN(v)) setClamped(v)
+              // allow free typing (including a momentarily-empty or out-of-range value);
+              // only digits pass through, clamping happens on blur/Enter.
+              const raw = e.target.value
+              if (raw === '' || /^\d+$/.test(raw)) setPageText(raw)
+            }}
+            onBlur={() => commit(page)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                commit(page)
+                e.currentTarget.blur()
+              }
             }}
             className="w-24 text-center text-3xl font-extrabold py-2 rounded-2xl border-2 border-slate-200 outline-none focus:border-indigo-400"
           />
           <button
-            onClick={() => setClamped(page + 1)}
+            onClick={() => commit(page + 1)}
             disabled={page >= maxPage}
             aria-label="עמוד הבא"
             className="w-11 h-11 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center disabled:opacity-30 active:scale-90 transition-transform"
@@ -114,7 +128,7 @@ export function PageBrowser({
               <button
                 key={topic.id}
                 onClick={() => {
-                  setPage(topic.pageRange[0])
+                  setPageText(String(topic.pageRange[0]))
                   onSelect(topic.id)
                 }}
                 className={`flex items-center gap-3 rounded-2xl p-3 text-right transition-colors active:scale-95 ${
