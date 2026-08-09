@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { TOPICS } from '../../data/topics'
+import { TOPICS, pageBoundsForBook } from '../../data/topics'
 import { ScreenShell } from '../common/ScreenShell'
 import { TopicCard } from '../common/TopicCard'
 import { PageBrowser } from './PageBrowser'
@@ -22,7 +22,7 @@ export function TopicSelectScreen({
   const defaultPageBook: BookId = book === 'all' ? 14 : book
   const [pageSeed, setPageSeed] = useState<{ book: BookId; page: number }>({
     book: defaultPageBook,
-    page: 1,
+    page: pageBoundsForBook(defaultPageBook)[0],
   })
   const topics = TOPICS.filter((t) => book === 'all' || t.book === book)
 

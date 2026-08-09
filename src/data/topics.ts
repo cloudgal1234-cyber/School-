@@ -5,10 +5,12 @@ import type { BookId, SubTopic, Topic, TopicId } from '../types'
  * ספר 14 – שברים חלק ב', ספרות רומיות, מספרים עשרוניים חלק א'
  * ספר 15 – מספרים טבעיים חלק ב', מספרים עשרוניים חלק ב', אחוזים, ממוצע, מחקר נתונים
  *
- * pageRange מחלק את הספר ליחידות לפי סדר הנושאים בתוכן העניינים, כדי לאפשר
- * ניווט "לפי עמוד". מספרי העמודים משוערים (חלוקה יחסית של הספר) ולא הועתקו
- * מתוך עותק מודפס. subTopics מפרקים כל נושא לתת-נושאים ("חלק א'", "חלק ב'"...)
- * שתואמים למחוללי השאלות ב-src/generators.
+ * pageRange מחלק כל ספר (1–216 עמודים) ליחידות לפי סדר הנושאים בתוכן
+ * העניינים, כדי לאפשר ניווט "לפי עמוד" על פני הספר כולו. מכיוון שאין לי
+ * תוכן עניינים מדויק ועמוד-מדויק של הספר הפיזי, שמונת הנושאים שזוהו נמתחים
+ * באופן יחסי על פני כל 216 העמודים (לא הועתקו מעותק מודפס). subTopics
+ * מפרקים כל נושא לתת-נושאים ("חלק א'", "חלק ב'"...) שתואמים למחוללי
+ * השאלות ב-src/generators.
  */
 
 const FRACTIONS_B_SUBTOPICS: SubTopic[] = [
@@ -68,7 +70,7 @@ export const TOPICS: Topic[] = [
     description: 'חיבור וחיסור שברים, הרחבה וצמצום, שברים מעורבים',
     emoji: '🍕',
     color: 'from-rose-400 to-pink-500',
-    pageRange: [4, 19],
+    pageRange: [4, 95],
     subTopics: FRACTIONS_B_SUBTOPICS,
   },
   {
@@ -79,7 +81,7 @@ export const TOPICS: Topic[] = [
     description: 'קריאה וכתיבה של מספרים בספרות רומיות',
     emoji: '🏛️',
     color: 'from-amber-400 to-orange-500',
-    pageRange: [20, 25],
+    pageRange: [96, 130],
     subTopics: ROMAN_NUMERALS_SUBTOPICS,
   },
   {
@@ -90,7 +92,7 @@ export const TOPICS: Topic[] = [
     description: 'עשיריות ומאיות, השוואה, חיבור וחיסור',
     emoji: '🔟',
     color: 'from-sky-400 to-blue-500',
-    pageRange: [26, 40],
+    pageRange: [131, 216],
     subTopics: DECIMALS_A_SUBTOPICS,
   },
   {
@@ -101,7 +103,7 @@ export const TOPICS: Topic[] = [
     description: 'כפל וחילוק במספרים גדולים, סדר פעולות חשבון',
     emoji: '🔢',
     color: 'from-emerald-400 to-teal-500',
-    pageRange: [4, 13],
+    pageRange: [4, 53],
     subTopics: NATURAL_NUMBERS_B_SUBTOPICS,
   },
   {
@@ -112,7 +114,7 @@ export const TOPICS: Topic[] = [
     description: 'כפל וחילוק של מספרים עשרוניים',
     emoji: '🎯',
     color: 'from-cyan-400 to-sky-500',
-    pageRange: [14, 23],
+    pageRange: [54, 102],
     subTopics: DECIMALS_B_SUBTOPICS,
   },
   {
@@ -123,7 +125,7 @@ export const TOPICS: Topic[] = [
     description: 'אחוז מכמות, המרה בין שבר, עשרוני ואחוז',
     emoji: '💯',
     color: 'from-violet-400 to-purple-500',
-    pageRange: [24, 31],
+    pageRange: [103, 142],
     subTopics: PERCENTAGES_SUBTOPICS,
   },
   {
@@ -134,7 +136,7 @@ export const TOPICS: Topic[] = [
     description: 'חישוב ממוצע של קבוצת מספרים',
     emoji: '⚖️',
     color: 'from-fuchsia-400 to-pink-500',
-    pageRange: [32, 37],
+    pageRange: [143, 172],
     subTopics: AVERAGE_SUBTOPICS,
   },
   {
@@ -145,7 +147,7 @@ export const TOPICS: Topic[] = [
     description: 'קריאת גרפים וטבלאות, מקסימום, מינימום וטווח',
     emoji: '📊',
     color: 'from-lime-400 to-green-500',
-    pageRange: [38, 46],
+    pageRange: [173, 216],
     subTopics: DATA_RESEARCH_SUBTOPICS,
   },
 ]
