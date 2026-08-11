@@ -153,7 +153,7 @@ export function hundredthsAddSubQuestion(level: Level): Question {
 
 const REVIEW_POOL = [tenthsIntroQuestion, tenthsAddSubQuestion, hundredthsIntroQuestion, hundredthsAddSubQuestion]
 
-/** עמ' 196–216: חזרה כללית */
+/** עמ' 196–212: חזרה כללית */
 export function reviewQuestion(level: Level): Question {
   return pick(REVIEW_POOL)(level)
 }
