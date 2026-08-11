@@ -51,6 +51,10 @@ export function fractionsEqual(a: Fraction, b: Fraction): boolean {
   return a.n * b.d === b.n * a.d
 }
 
+export function lcm(a: number, b: number): number {
+  return Math.abs(a * b) / gcd(a, b)
+}
+
 /** Rounds to `decimals` places and trims trailing zeros (e.g. 3.4000 -> "3.4", 340.0000 -> "340"). */
 export function trimDecimal(n: number, decimals: number): string {
   if (decimals <= 0) return n.toFixed(0)
@@ -89,13 +93,16 @@ export function buildNumericChoices(
   return { choices, correctChoiceId }
 }
 
-/** Builds a 4-choice MCQ set from arbitrary string options (already includes the correct one). */
+/**
+ * Builds an MCQ choice set (up to 4) from arbitrary string options, deduplicated.
+ * When the pool of genuinely distinct options is small (e.g. a כן/לא question),
+ * this returns fewer than 4 choices rather than padding with fake labels.
+ */
 export function buildChoicesFromLabels(correctLabel: string, distractors: string[]): {
   choices: Choice[]
   correctChoiceId: string
 } {
   const labels = shuffle([correctLabel, ...distractors].filter((v, i, a) => a.indexOf(v) === i).slice(0, 4))
-  while (labels.length < 4) labels.push(`${correctLabel}-${labels.length}`)
   const choices: Choice[] = labels.map((label, i) => ({ id: `c${i}`, label }))
   const correctChoiceId = choices.find((c) => c.label === correctLabel)!.id
   return { choices, correctChoiceId }

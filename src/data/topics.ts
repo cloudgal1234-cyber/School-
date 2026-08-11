@@ -1,34 +1,36 @@
 import type { BookId, SubTopic, Topic, TopicId } from '../types'
 
 /**
- * Topics follow the table of contents of "שבילים פלוס" (Matach) for כיתה ה':
- * ספר 14 – שברים חלק ב', ספרות רומיות, מספרים עשרוניים חלק א'
- * ספר 15 – מספרים טבעיים חלק ב', מספרים עשרוניים חלק ב', אחוזים, ממוצע, מחקר נתונים
+ * ספר 14 (עמ' 4–126 שברים, עמ' 127–216 עשרוניים חלק א') תואם בדיוק לתוכן
+ * העניינים האמיתי כפי שנמסר לי מהעותק הפיזי של המשתמש/ת — כולל חלוקת
+ * תת-הנושאים ומספרי העמודים המדויקים. שימו לב: לספר הזה (במהדורה שיש
+ * למשתמש/ת) אין פרק נפרד על ספרות רומיות, ולכן הוא לא מופיע כאן.
  *
- * pageRange מחלק כל ספר (1–216 עמודים) ליחידות לפי סדר הנושאים בתוכן
- * העניינים, כדי לאפשר ניווט "לפי עמוד" על פני הספר כולו. מכיוון שאין לי
- * תוכן עניינים מדויק ועמוד-מדויק של הספר הפיזי, שמונת הנושאים שזוהו נמתחים
- * באופן יחסי על פני כל 216 העמודים (לא הועתקו מעותק מודפס). subTopics
- * מפרקים כל נושא לתת-נושאים ("חלק א'", "חלק ב'"...) שתואמים למחוללי
- * השאלות ב-src/generators.
+ * ספר 15 (מספרים טבעיים ב', עשרוניים ב', אחוזים, ממוצע, מחקר נתונים) עדיין
+ * מבוסס על חיפוש כללי באינטרנט בלבד — אין לי תוכן עניינים מדויק שלו, אז
+ * מספרי העמודים שם הם עדיין הערכה יחסית על פני 216 העמודים (עד שיימסר
+ * תוכן העניינים האמיתי, כפי שנעשה לספר 14).
+ *
+ * pageRange מחלק כל ספר (עמ' 4–216) ליחידות, לניווט "לפי עמוד". subTopics
+ * מפרקים כל נושא לתת-נושאים שתואמים למחוללי השאלות ב-src/generators.
  */
 
 const FRACTIONS_B_SUBTOPICS: SubTopic[] = [
-  { id: 'same-denominator', label: 'חלק א׳', description: 'חיבור וחיסור עם מכנה משותף' },
-  { id: 'related-denominator', label: 'חלק ב׳', description: 'חיבור וחיסור עם הרחבה למכנה משותף' },
-  { id: 'compare', label: 'חלק ג׳', description: 'השוואת שברים' },
-  { id: 'mixed-numbers', label: 'חלק ד׳', description: 'שברים מעורבים ושברים פשוטים' },
-]
-
-const ROMAN_NUMERALS_SUBTOPICS: SubTopic[] = [
-  { id: 'to-roman', label: 'חלק א׳', description: 'ממספר לספרות רומיות' },
-  { id: 'to-arabic', label: 'חלק ב׳', description: 'מספרות רומיות למספר' },
+  { id: 'equivalent', label: 'עמ׳ 4–7', description: 'שברים שווים' },
+  { id: 'expand', label: 'עמ׳ 8–27', description: 'הרחבה' },
+  { id: 'reduce', label: 'עמ׳ 28–36', description: 'צמצום' },
+  { id: 'expand-reduce', label: 'עמ׳ 37–54', description: 'הרחבה וצמצום' },
+  { id: 'common-denominator', label: 'עמ׳ 55–72', description: 'מכנה משותף' },
+  { id: 'add-sub-unlike', label: 'עמ׳ 73–99', description: 'חיבור וחיסור שברים עם מכנים שונים' },
+  { id: 'review', label: 'עמ׳ 100–126', description: 'חזרה' },
 ]
 
 const DECIMALS_A_SUBTOPICS: SubTopic[] = [
-  { id: 'compare', label: 'חלק א׳', description: 'השוואת מספרים עשרוניים' },
-  { id: 'fraction-to-decimal', label: 'חלק ב׳', description: 'שבר עשרוני' },
-  { id: 'add-sub', label: 'חלק ג׳', description: 'חיבור וחיסור מספרים עשרוניים' },
+  { id: 'tenths-intro', label: 'עמ׳ 127–150', description: 'עשיריות – הכרה' },
+  { id: 'tenths-add-sub', label: 'עמ׳ 151–162', description: 'עשיריות – חיבור וחיסור' },
+  { id: 'hundredths-intro', label: 'עמ׳ 163–185', description: 'מאיות – הכרה' },
+  { id: 'hundredths-add-sub', label: 'עמ׳ 186–195', description: 'מאיות – חיבור וחיסור' },
+  { id: 'review', label: 'עמ׳ 196–216', description: 'חזרה כללית' },
 ]
 
 const NATURAL_NUMBERS_B_SUBTOPICS: SubTopic[] = [
@@ -67,32 +69,21 @@ export const TOPICS: Topic[] = [
     book: 14,
     title: 'שברים – חלק ב׳',
     shortTitle: 'שברים',
-    description: 'חיבור וחיסור שברים, הרחבה וצמצום, שברים מעורבים',
+    description: 'שברים שווים, הרחבה, צמצום, מכנה משותף, חיבור וחיסור',
     emoji: '🍕',
     color: 'from-rose-400 to-pink-500',
-    pageRange: [4, 95],
+    pageRange: [4, 126],
     subTopics: FRACTIONS_B_SUBTOPICS,
-  },
-  {
-    id: 'roman-numerals',
-    book: 14,
-    title: 'ספרות רומיות',
-    shortTitle: 'ספרות רומיות',
-    description: 'קריאה וכתיבה של מספרים בספרות רומיות',
-    emoji: '🏛️',
-    color: 'from-amber-400 to-orange-500',
-    pageRange: [96, 130],
-    subTopics: ROMAN_NUMERALS_SUBTOPICS,
   },
   {
     id: 'decimals-a',
     book: 14,
     title: 'מספרים עשרוניים – חלק א׳',
     shortTitle: 'עשרוניים א׳',
-    description: 'עשיריות ומאיות, השוואה, חיבור וחיסור',
+    description: 'עשיריות ומאיות: הכרה, חיבור וחיסור',
     emoji: '🔟',
     color: 'from-sky-400 to-blue-500',
-    pageRange: [131, 216],
+    pageRange: [127, 216],
     subTopics: DECIMALS_A_SUBTOPICS,
   },
   {
@@ -157,7 +148,7 @@ export const TOPIC_BY_ID: Record<TopicId, Topic> = Object.fromEntries(
 ) as Record<TopicId, Topic>
 
 export const BOOKS = [
-  { id: 14 as const, title: 'שבילים 14', subtitle: 'שברים • ספרות רומיות • עשרוניים א׳' },
+  { id: 14 as const, title: 'שבילים 14', subtitle: 'שברים • עשרוניים א׳' },
   { id: 15 as const, title: 'שבילים 15', subtitle: 'טבעיים ב׳ • עשרוניים ב׳ • אחוזים • ממוצע • נתונים' },
 ]
 

@@ -2,7 +2,6 @@ export type BookId = 14 | 15
 
 export type TopicId =
   | 'fractions-b'
-  | 'roman-numerals'
   | 'decimals-a'
   | 'natural-numbers-b'
   | 'decimals-b'

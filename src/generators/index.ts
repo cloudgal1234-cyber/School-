@@ -1,6 +1,5 @@
 import type { Level, Question, QuestionGenerator, TopicId } from '../types'
 import { generateFractionsB, FRACTIONS_B_SUBTOPICS } from './fractionsB'
-import { generateRomanNumerals, ROMAN_NUMERALS_SUBTOPICS } from './romanNumerals'
 import { generateDecimalsA, DECIMALS_A_SUBTOPICS } from './decimalsA'
 import { generateNaturalNumbersB, NATURAL_NUMBERS_B_SUBTOPICS } from './naturalNumbersB'
 import { generateDecimalsB, DECIMALS_B_SUBTOPICS } from './decimalsB'
@@ -10,7 +9,6 @@ import { generateDataResearch, DATA_RESEARCH_SUBTOPICS } from './dataResearch'
 
 export const GENERATORS: Record<TopicId, QuestionGenerator> = {
   'fractions-b': generateFractionsB,
-  'roman-numerals': generateRomanNumerals,
   'decimals-a': generateDecimalsA,
   'natural-numbers-b': generateNaturalNumbersB,
   'decimals-b': generateDecimalsB,
@@ -19,10 +17,9 @@ export const GENERATORS: Record<TopicId, QuestionGenerator> = {
   'data-research': generateDataResearch,
 }
 
-/** Per-topic registry of named sub-skill generators ("חלק א'", "חלק ב'", ...). */
+/** Per-topic registry of named sub-skill generators (matching the real table of contents where known). */
 export const SUB_GENERATORS: Record<TopicId, Record<string, QuestionGenerator>> = {
   'fractions-b': FRACTIONS_B_SUBTOPICS,
-  'roman-numerals': ROMAN_NUMERALS_SUBTOPICS,
   'decimals-a': DECIMALS_A_SUBTOPICS,
   'natural-numbers-b': NATURAL_NUMBERS_B_SUBTOPICS,
   'decimals-b': DECIMALS_B_SUBTOPICS,
